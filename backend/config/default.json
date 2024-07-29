@@ -1,0 +1,6 @@
+{
+    "mongoURI":"mongodb+srv://procydia:j7Ryn$b2NhSfVXj@procydia.ejkkxci.mongodb.net/?retryWrites=true&w=majority&appName=procydia",
+    "jwtSecret": "secret",
+    "emailUser": "procydiadev@gmail.com",
+    "emailPass": "Dev#procydia"
+}
