@@ -56,4 +56,80 @@ router.get('/', async (req, res) => {
   }
 });
 
+// @route    PUT api/products/:id
+// @desc     Update a product
+// @access   Private
+router.put(
+  '/:id',
+  [
+    auth,
+    [
+      check('name', 'Name is required').not().isEmpty(),
+      check('description', 'Description is required').not().isEmpty(),
+      check('price', 'Price is required').isNumeric()
+    ]
+  ],
+  async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
+
+    const { name, description, price } = req.body;
+
+    try {
+      // Find the product by ID
+      let product = await Product.findById(req.params.id);
+
+      if (!product) {
+        return res.status(404).json({ msg: 'Product not found' });
+      }
+
+      // Ensure the user owns the product (optional, based on your auth middleware)
+      if (product.user.toString() !== req.user.id) {
+        return res.status(401).json({ msg: 'User not authorized' });
+      }
+
+      // Update the product
+      product.name = name;
+      product.description = description;
+      product.price = price;
+
+      await product.save();
+
+      res.json(product);
+    } catch (err) {
+      console.error(err.message);
+      res.status(500).send('Server error');
+    }
+  }
+);
+
+// @route    DELETE api/products/:id
+// @desc     Delete a product
+// @access   Private
+router.delete('/:id', auth, async (req, res) => {
+  try {
+    // Find the product by ID
+    let product = await Product.findById(req.params.id);
+
+    if (!product) {
+      return res.status(404).json({ msg: 'Product not found' });
+    }
+
+    // Ensure the user owns the product (optional, based on your auth middleware)
+    if (product.user.toString() !== req.user.id) {
+      return res.status(401).json({ msg: 'User not authorized' });
+    }
+
+    // Delete the product
+    await product.remove();
+
+    res.json({ msg: 'Product removed' });
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server error');
+  }
+});
+
 module.exports = router;
