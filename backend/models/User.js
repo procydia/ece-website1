@@ -19,6 +19,9 @@ const UserSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
+  profileimage: {
+    type: String,
+  },
   googleId: String,
   otp: String,
   otpExpires: Date,
