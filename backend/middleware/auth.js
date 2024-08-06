@@ -21,3 +21,21 @@ module.exports = function (req, res, next) {
     res.status(401).json({ msg: "Token is not valid" });
   }
 };
+
+// Middleware to authenticate token
+const authenticateToken = (req, res, next) => {
+  const token = req.header('Authorization')?.split(' ')[1];
+  if (!token) {
+    return res.status(401).json({ message: 'No token, authorization denied' });
+  }
+
+  try {
+    const decoded = jwt.verify(token, 'your_jwt_secret'); // Use the same secret key used for signing the token
+    req.vendor = decoded.vendor; // Ensure vendor ID is stored in decoded.vendor
+    next();
+  } catch (err) {
+    res.status(401).json({ message: 'Token is not valid' });
+  }
+};
+
+module.exports = authenticateToken;

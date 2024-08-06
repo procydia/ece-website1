@@ -5,6 +5,7 @@ const jwt = require('jsonwebtoken');
 const config = require('config');
 const { check, validationResult } = require('express-validator');
 const User = require('../models/User');
+const Vendor = require('../models/Vendor')
 const auth = require('../middleware/auth');
 const sendEmail = require('../utils/sendEmail');
 const { google } = require('googleapis');
